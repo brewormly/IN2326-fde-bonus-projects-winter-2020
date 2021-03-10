@@ -1,0 +1,30 @@
+stages:
+    - project_private
+    - test
+    - benchmark
+
+project_private:
+    stage: project_private
+    script:
+        - echo "CI_PROJECT_VISIBILITY = $CI_PROJECT_VISIBILITY"
+        - /bin/bash -c 'if [[ $CI_PROJECT_VISIBILITY = "private" ]]; then exit 0; else echo "Set your project visibility to private! Settings -> General -> Visibility -> Project visibility"; exit 1; fi'
+    tags:
+        - "fdedi"
+
+test:
+    stage: test
+    script: 
+        - cd deliverable
+        - ./test.sh
+    tags:
+        - "fdedi"
+
+benchmark:
+    stage: benchmark
+    script: 
+        - cd deliverable
+        - ./build.sh
+        - cd ..
+        - /data/delivery/measureTaxi ./deliverable/submit.sh
+    tags:
+        - "fdedi"
